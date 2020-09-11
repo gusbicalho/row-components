@@ -1,7 +1,2 @@
-module Main (main) where
-
-import RowComponents (projectName)
-
-
-main :: IO ()
-main = putStrLn ("Tests for " ++ projectName)
+{-# OPTIONS_GHC -F -pgmF hspec-discover #-}
+{-# OPTIONS_GHC -Wno-missing-export-lists #-}
