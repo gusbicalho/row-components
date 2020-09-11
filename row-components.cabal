@@ -1,4 +1,4 @@
-cabal-version:       3.2
+cabal-version:       3.0
 name:                row-components
 version:             0.0.0.0
 synopsis:            See README for more info
