@@ -1,0 +1,6 @@
+cradle:
+  cabal:
+    - path: "./src"
+      component: "row-components:lib"
+    - path: "./test"
+      component: "row-components:row-components-test"

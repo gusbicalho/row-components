@@ -17,7 +17,9 @@ build-type:          Simple
 extra-doc-files:     README.md
                      CHANGELOG.md
 tested-with:         GHC == 8.8.3
+                     GHC == 8.8.4
                      GHC == 8.10.1
+                     GHC == 8.10.2
 
 source-repository head
   type:                git
@@ -60,7 +62,10 @@ test-suite row-components-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
+  other-modules:       RowComponentsSpec
   build-depends:       row-components
+                     , hspec
+  build-tool-depends:  hspec-discover:hspec-discover
   ghc-options:         -threaded
                        -rtsopts
                        -with-rtsopts=-N
