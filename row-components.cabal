@@ -28,6 +28,7 @@ source-repository head
 common common-options
   build-depends:       base >= 4.13.0.0 && < 4.15
                      , base-prelude
+                     , row-types
 
   mixins:              base hiding (Prelude)
                      , base-prelude (BasePrelude as Prelude)
@@ -52,6 +53,21 @@ common common-options
 
   default-language:    Haskell2010
 
+  default-extensions:  ConstraintKinds
+                     , DataKinds
+                     , DerivingStrategies
+                     , FlexibleContexts
+                     , FlexibleInstances
+                     , FunctionalDependencies
+                     , GADTs
+                     , MultiParamTypeClasses
+                     , OverloadedLabels
+                     , PolyKinds
+                     , ScopedTypeVariables
+                     , TypeApplications
+                     , TypeFamilies
+                     , TypeOperators
+
 library
   import:              common-options
   hs-source-dirs:      src
@@ -65,6 +81,7 @@ test-suite row-components-test
   other-modules:       RowComponentsSpec
   build-depends:       row-components
                      , hspec
+                     , random
   build-tool-depends:  hspec-discover:hspec-discover
   ghc-options:         -threaded
                        -rtsopts
