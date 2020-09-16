@@ -14,7 +14,7 @@ import Data.Row.Records
     type (.+),
     type (.==),
   )
-import RowComponents (noDeps, withDep, withDeps, withRenamedDeps)
+import RowComponents (withDep, withDeps, withRenamedDeps)
 import System.Random (randomRIO)
 import Test.Hspec (SpecWith, it, shouldBe)
 
@@ -23,7 +23,7 @@ spec = it "passes" $ system `seq` (1 :: Int) `shouldBe` 1
 
 system :: _
 system =
-  #foo .== (makeFoo & noDeps)
+  #foo .== makeFoo
     .+ #bar .== (makeBar & withDep @"foo")
     .+ #qwe
       .== ( makeQwe

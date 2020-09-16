@@ -1,12 +1,11 @@
-{-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 module RowComponents
-  ( noDeps,
-    WithDeps (..),
+  ( WithDeps (..),
     withDeps,
     withDep,
   )
@@ -16,6 +15,8 @@ import Data.Kind (Type)
 import Data.Row.Internal (LT ((:->)), Row (R))
 import Data.Row.Records (Empty, Rec, type (.+), type (.==))
 import GHC.TypeLits (Symbol)
+import GHC.TypeLits (ErrorMessage (Text), TypeError)
+import Prelude hiding (TypeError)
 
 -- type family Matches (spec :: Row Type) (r :: Row Type) :: Constraint where
 --   Matches Empty r = ()
@@ -31,10 +32,6 @@ data BuildSpec (providedDeps :: Row Symbol) (requiredDeps :: Row Type) (a :: Typ
     forall fromName asName provided required a.
     BuildSpec provided required a ->
     BuildSpec (provided .+ fromName .== asName) required a
-
-{-# INLINE noDeps #-}
-noDeps :: IO a -> BuildSpec Empty Empty a
-noDeps build = NoDeps (const build)
 
 type family ZipToRow (labels :: [Symbol]) (values :: [k]) :: Row k where
   ZipToRow '[] _ = Empty
@@ -97,3 +94,23 @@ instance
   where
   {-# INLINE withRenamedDeps #-}
   withRenamedDeps buildFn = (ProvidingDep @l @v buildFn) & withRenamedDeps @('R pairs)
+
+-- Starting the BuildSpec
+type family ToStartOrder (buildSpecRow :: Row Type) :: [Symbol] where
+  ToStartOrder ('R pairs) = Reverse (GoToStartOrder pairs pairs '[])
+
+type family
+  GoToStartOrder
+    (missingPairs :: [LT Type])
+    (pairs :: [LT Type])
+    (acc :: [Symbol])
+  where
+-- Every component has been added to acc
+  GoToStartOrder '[] pairs acc = TypeError ('Text "Unimplemented")
+
+type family Reverse (xs :: [k]) :: [k] where
+  Reverse xs = GoReverse xs '[]
+
+type family GoReverse (xs :: [k]) (acc :: [k]) :: [k] where
+  GoReverse '[] acc = acc
+  GoReverse (x : xs) acc = GoReverse xs (x : acc)
